@@ -1,0 +1,135 @@
+# depslib dependency file v1.0
+1469415323 source:g:\codeblocks\project\snappy_mychange\snappy-c.cc
+	"snappy.h"
+	"snappy-c.h"
+
+1469415323 g:\codeblocks\project\snappy_mychange\snappy.h
+	<stddef.h>
+	<string>
+	"snappy-stubs-public.h"
+
+1469415323 g:\codeblocks\project\snappy_mychange\snappy-stubs-public.h
+	<stdint.h>
+	<stddef.h>
+	<sys/uio.h>
+	<string>
+
+1469415323 g:\codeblocks\project\snappy_mychange\snappy-c.h
+	<stddef.h>
+
+1469415323 source:g:\codeblocks\project\snappy_mychange\snappy-sinksource.cc
+	<string.h>
+	"snappy-sinksource.h"
+
+1469415323 g:\codeblocks\project\snappy_mychange\snappy-sinksource.h
+	<stddef.h>
+
+1471835015 source:g:\codeblocks\project\snappy_mychange\snappy.cc
+	"snappy.h"
+	"snappy-internal.h"
+	"snappy-sinksource.h"
+	<stdio.h>
+	<algorithm>
+	<string>
+	<vector>
+
+1469415323 g:\codeblocks\project\snappy_mychange\snappy-internal.h
+	"snappy-stubs-internal.h"
+
+1469415323 g:\codeblocks\project\snappy_mychange\snappy-stubs-internal.h
+	"config.h"
+	<string>
+	<assert.h>
+	<stdlib.h>
+	<string.h>
+	<sys/mman.h>
+	"snappy-stubs-public.h"
+	<sys/byteorder.h>
+	<sys/endian.h>
+	<stdlib.h>
+	<libkern/OSByteOrder.h>
+	<byteswap.h>
+
+1469415323 g:\codeblocks\project\snappy_mychange\config.h
+
+1471920926 source:g:\codeblocks\project\snappy_mychange\testsnappy.cpp
+	<iostream>
+	<string>
+	<unistd.h>
+	<sys/types.h>
+	<sys/stat.h>
+	<fcntl.h>
+	<cstring>
+	<cstdlib>
+	<cstdio>
+	<errno.h>
+	<string.h>
+	"snappy.h"
+
+1469415323 source:e:\codeblocks\project\snappy_mychange\snappy-c.cc
+	"snappy.h"
+	"snappy-c.h"
+
+1469415323 e:\codeblocks\project\snappy_mychange\snappy.h
+	<stddef.h>
+	<string>
+	"snappy-stubs-public.h"
+
+1469415323 e:\codeblocks\project\snappy_mychange\snappy-stubs-public.h
+	<stdint.h>
+	<stddef.h>
+	<sys/uio.h>
+	<string>
+
+1469415323 e:\codeblocks\project\snappy_mychange\snappy-c.h
+	<stddef.h>
+
+1469415323 source:e:\codeblocks\project\snappy_mychange\snappy-sinksource.cc
+	<string.h>
+	"snappy-sinksource.h"
+
+1469415323 e:\codeblocks\project\snappy_mychange\snappy-sinksource.h
+	<stddef.h>
+
+1471922202 source:e:\codeblocks\project\snappy_mychange\snappy.cc
+	"snappy.h"
+	"snappy-internal.h"
+	"snappy-sinksource.h"
+	<stdio.h>
+	<algorithm>
+	<string>
+	<vector>
+
+1469415323 e:\codeblocks\project\snappy_mychange\snappy-internal.h
+	"snappy-stubs-internal.h"
+
+1469415323 e:\codeblocks\project\snappy_mychange\snappy-stubs-internal.h
+	"config.h"
+	<string>
+	<assert.h>
+	<stdlib.h>
+	<string.h>
+	<sys/mman.h>
+	"snappy-stubs-public.h"
+	<sys/byteorder.h>
+	<sys/endian.h>
+	<stdlib.h>
+	<libkern/OSByteOrder.h>
+	<byteswap.h>
+
+1469415323 e:\codeblocks\project\snappy_mychange\config.h
+
+1471920926 source:e:\codeblocks\project\snappy_mychange\testsnappy.cpp
+	<iostream>
+	<string>
+	<unistd.h>
+	<sys/types.h>
+	<sys/stat.h>
+	<fcntl.h>
+	<cstring>
+	<cstdlib>
+	<cstdio>
+	<errno.h>
+	<string.h>
+	"snappy.h"
+

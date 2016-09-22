@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="snappy_mychange" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/snappy_mychange" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="-a" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/snappy_mychange" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Unit filename="alice29.snappy" />
+		<Unit filename="alice29.txt" />
+		<Unit filename="config.h" />
+		<Unit filename="snappy-c.cc" />
+		<Unit filename="snappy-c.h" />
+		<Unit filename="snappy-internal.h" />
+		<Unit filename="snappy-sinksource.cc" />
+		<Unit filename="snappy-sinksource.h" />
+		<Unit filename="snappy-stubs-internal.h" />
+		<Unit filename="snappy-stubs-public.h" />
+		<Unit filename="snappy-stubs-public.h.in" />
+		<Unit filename="snappy-test.h" />
+		<Unit filename="snappy.cc" />
+		<Unit filename="snappy.h" />
+		<Unit filename="testsnappy.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

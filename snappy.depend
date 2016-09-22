@@ -1,0 +1,67 @@
+# depslib dependency file v1.0
+1469415323 source:g:\codeblocks\project\snappy\snappy-c.cc
+	"snappy.h"
+	"snappy-c.h"
+
+1469415323 g:\codeblocks\project\snappy\snappy.h
+	<stddef.h>
+	<string>
+	"snappy-stubs-public.h"
+
+1469415323 g:\codeblocks\project\snappy\snappy-stubs-public.h
+	<stdint.h>
+	<stddef.h>
+	<sys/uio.h>
+	<string>
+
+1469415323 g:\codeblocks\project\snappy\snappy-c.h
+	<stddef.h>
+
+1469415323 source:g:\codeblocks\project\snappy\snappy-sinksource.cc
+	<string.h>
+	"snappy-sinksource.h"
+
+1469415323 g:\codeblocks\project\snappy\snappy-sinksource.h
+	<stddef.h>
+
+1469415323 source:g:\codeblocks\project\snappy\snappy.cc
+	"snappy.h"
+	"snappy-internal.h"
+	"snappy-sinksource.h"
+	<stdio.h>
+	<algorithm>
+	<string>
+	<vector>
+
+1469415323 g:\codeblocks\project\snappy\snappy-internal.h
+	"snappy-stubs-internal.h"
+
+1469415323 g:\codeblocks\project\snappy\snappy-stubs-internal.h
+	"config.h"
+	<string>
+	<assert.h>
+	<stdlib.h>
+	<string.h>
+	<sys/mman.h>
+	"snappy-stubs-public.h"
+	<sys/byteorder.h>
+	<sys/endian.h>
+	<stdlib.h>
+	<libkern/OSByteOrder.h>
+	<byteswap.h>
+
+1469415323 g:\codeblocks\project\snappy\config.h
+
+1469539191 source:g:\codeblocks\project\snappy\testsnappy.cpp
+	<iostream>
+	<string>
+	<unistd.h>
+	<sys/types.h>
+	<sys/stat.h>
+	<fcntl.h>
+	<cstring>
+	<cstdlib>
+	<cstdio>
+	<errno.h>
+	"snappy.h"
+
