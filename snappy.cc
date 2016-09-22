@@ -714,13 +714,14 @@ class SnappyDecompressor {
     }
     return true;
   }
-char *string1="re ";
-char *string2="abc";
+char *string1="Alice";
+char *string2="Blice";
 FILE *outfile;
 int *next;
 int number=0;
 short index[64*1024];
 char* outstr;
+char* buffstr;
 int outnum=0;
 
 void GetNext_R(char *t,int *next)
@@ -743,8 +744,113 @@ void GetNext_R(char *t,int *next)
     }
 
 }
+char* EmitLiteral(char* op,
+                                const char* literal,
+                                int len,
+                                bool allow_fast_path) {
+  int n = len - 1;      // Zero-length literals are disallowed
+  if (n < 60) {
+    // Fits in tag byte
+    *op++ = LITERAL | (n << 2);
+
+    // The vast majority of copies are below 16 bytes, for which a
+    // call to memcpy is overkill. This fast path can sometimes
+    // copy up to 15 bytes too much, but that is okay in the
+    // main loop, since we have a bit to go on for both sides:
+    //
+    //   - The input will always have kInputMarginBytes = 15 extra
+    //     available bytes, as long as we're in the main loop, and
+    //     if not, allow_fast_path = false.
+    //   - The output will always have 32 spare bytes (see
+    //     MaxCompressedLength).
+    if (allow_fast_path && len <= 16) {
+      UnalignedCopy64(literal, op);
+      UnalignedCopy64(literal + 8, op + 8);
+      return op + len;
+    }
+  } else {
+    // Encode in upcoming bytes
+    char* base = op;
+    int count = 0;
+    op++;
+    while (n > 0) {
+      *op++ = n & 0xff;
+      n >>= 8;
+      count++;
+    }
+    assert(count >= 1);
+    assert(count <= 4);
+    *base = LITERAL | ((59+count) << 2);
+  }
+  memcpy(op, literal, len);
+  return op + len;
+}
 
 
+
+char* EmitCopyLessThan64(char* op, size_t offset, int len) {
+  assert(len <= 64);
+  assert(len >= 4);
+  assert(offset < 65536);
+
+  if ((len < 12) && (offset < 2048)) {
+    size_t len_minus_4 = len - 4;
+    assert(len_minus_4 < 8);            // Must fit in 3 bits
+    *op++ = COPY_1_BYTE_OFFSET + ((len_minus_4) << 2) + ((offset >> 8) << 5);
+    *op++ = offset & 0xff;
+  } else {
+    *op++ = COPY_2_BYTE_OFFSET + ((len-1) << 2);
+    LittleEndian::Store16(op, offset);
+    op += 2;
+  }
+  return op;
+}
+
+char* EmitCopy(char* op, size_t offset, int len) {
+  // Emit 64 byte copies but make sure to keep at least four bytes reserved
+  while (PREDICT_FALSE(len >= 68)) {
+    op = EmitCopyLessThan64(op, offset, 64);
+    len -= 64;
+  }
+
+  // Emit an extra 60 byte copy if have too much data to fit in one copy
+  if (len > 64) {
+    op = EmitCopyLessThan64(op, offset, 60);
+    len -= 60;
+  }
+
+  // Emit remainder
+  op = EmitCopyLessThan64(op, offset, len);
+  return op;
+}
+
+char* Encode32(char* sptr, uint32 v) {
+  // Operate on characters as unsigneds
+  unsigned char* ptr = reinterpret_cast<unsigned char*>(sptr);
+  static const int B = 128;
+  if (v < (1<<7)) {
+    *(ptr++) = v;
+  } else if (v < (1<<14)) {
+    *(ptr++) = v | B;
+    *(ptr++) = v>>7;
+  } else if (v < (1<<21)) {
+    *(ptr++) = v | B;
+    *(ptr++) = (v>>7) | B;
+    *(ptr++) = v>>14;
+  } else if (v < (1<<28)) {
+    *(ptr++) = v | B;
+    *(ptr++) = (v>>7) | B;
+    *(ptr++) = (v>>14) | B;
+    *(ptr++) = v>>21;
+  } else {
+    *(ptr++) = v | B;
+    *(ptr++) = (v>>7) | B;
+    *(ptr++) = (v>>14) | B;
+    *(ptr++) = (v>>21) | B;
+    *(ptr++) = v>>28;
+  }
+  return reinterpret_cast<char*>(ptr);
+}
 
 
   // Process the next item found in the input.
@@ -752,12 +858,16 @@ void GetNext_R(char *t,int *next)
 
 
   template <class Writer>
-  void DecompressAllTags(Writer* writer) {
+  void DecompressAllTags(Writer* writer,uint32 uncompressed_len) {
+      int len=uncompressed_len;
+      char * head;
     const char* ip = ip_;
     next=(int *)malloc(sizeof(int)*strlen(string1));
     GetNext_R(string1,next);
     outfile=fopen("test.snappy","wb");
+    head=buffstr=(char*)calloc(sizeof(char),wholelength);
     outstr=(char*)calloc(sizeof(char),wholelength);
+    int a=0;
     //try to realloc
     /*
     char * p = (char *)malloc(10 * size(char));
@@ -779,7 +889,7 @@ void GetNext_R(char *t,int *next)
     #define MAYBE_REFILL() \
         if (ip_limit_ - ip < kMaximumTagLength) { \
           ip_ = ip; \
-          if (!RefillTag()) return; \
+          if (!RefillTag()) goto A; \
           ip = ip_; \
         }
 
@@ -791,6 +901,7 @@ void GetNext_R(char *t,int *next)
         size_t literal_length = (c >> 2) + 1u;
         if (writer->TryFastAppend(ip, ip_limit_ - ip, literal_length)) {
           assert(literal_length < 61);
+          buffstr=EmitLiteral(buffstr,ip,literal_length,true);
           ip += literal_length;
           // NOTE(user): There is no MAYBE_REFILL() here, as TryFastAppend()
           // will not return true unless there's already at least five spare
@@ -856,6 +967,9 @@ tempoutnum=outnum;
     if (!writer->Append(outstr+tempoutnum, outnum-tempoutnum)) {
           return;
         }
+    buffstr=EmitLiteral(buffstr,outstr+tempoutnum,outnum-tempoutnum,true);
+
+
 /*
 if (!writer->Append(ip, literal_length)) {
           return;
@@ -876,15 +990,26 @@ if (!writer->Append(ip, literal_length)) {
         // those bits, we get copy_offset (since the bit-field starts at
         // bit 8).
         const uint32 copy_offset = entry & 0x700;
+         buffstr=EmitCopy(buffstr,copy_offset + trailer, length);
         if (!writer->AppendFromSelf(copy_offset + trailer, length)) {
           return;
         }
+
         MAYBE_REFILL();
       }
     }
 
+A:
+    char ulength[Varint::kMax32];
+  char* p = Varint::Encode32(ulength, wholelength+number*(strlen(string2)-strlen(string1)));
+  fwrite(ulength,sizeof(char),p-ulength,outfile);
+  fwrite(head,sizeof(char),buffstr-head,outfile);
+
+
 #undef MAYBE_REFILL
+
   }
+
 };
 
 bool SnappyDecompressor::RefillTag() {
@@ -965,7 +1090,7 @@ static bool InternalUncompressAllTags(SnappyDecompressor* decompressor,
   writer->SetExpectedLength(uncompressed_len);
 
   // Process the entire input
-  decompressor->DecompressAllTags(writer);
+  decompressor->DecompressAllTags(writer,uncompressed_len);
   writer->Flush();
   return (decompressor->eof() && writer->CheckLength());
 }

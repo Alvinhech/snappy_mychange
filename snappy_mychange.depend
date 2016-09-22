@@ -91,7 +91,7 @@
 1469415323 e:\codeblocks\project\snappy_mychange\snappy-sinksource.h
 	<stddef.h>
 
-1471922202 source:e:\codeblocks\project\snappy_mychange\snappy.cc
+1474535622 source:e:\codeblocks\project\snappy_mychange\snappy.cc
 	"snappy.h"
 	"snappy-internal.h"
 	"snappy-sinksource.h"
@@ -119,7 +119,7 @@
 
 1469415323 e:\codeblocks\project\snappy_mychange\config.h
 
-1471920926 source:e:\codeblocks\project\snappy_mychange\testsnappy.cpp
+1474530034 source:e:\codeblocks\project\snappy_mychange\testsnappy.cpp
 	<iostream>
 	<string>
 	<unistd.h>
