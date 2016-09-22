@@ -92,6 +92,7 @@ int main(int arg , char **argv)
     }
 else
 {
+    //test
     string instr;
    File::ReadFileToStringOrDie(COM_FILE_NAME,&instr);
    string outstr;
