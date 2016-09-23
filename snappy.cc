@@ -714,12 +714,14 @@ class SnappyDecompressor {
     }
     return true;
   }
-char *string1="Alice";
-char *string2="Blice";
+  #define MAXBUFF (64*1024)
+char *string1="tired";
+char *string2="tire";
 FILE *outfile;
 int *next;
 int number=0;
-short index[64*1024];
+int index[64*1024];
+int  index_index=0;
 char* outstr;
 char* buffstr;
 int outnum=0;
@@ -867,7 +869,7 @@ char* Encode32(char* sptr, uint32 v) {
     outfile=fopen("test.snappy","wb");
     head=buffstr=(char*)calloc(sizeof(char),wholelength);
     outstr=(char*)calloc(sizeof(char),wholelength);
-    int a=0;
+    short  indexnum=0;
     //try to realloc
     /*
     char * p = (char *)malloc(10 * size(char));
@@ -903,6 +905,8 @@ char* Encode32(char* sptr, uint32 v) {
           assert(literal_length < 61);
           buffstr=EmitLiteral(buffstr,ip,literal_length,true);
           ip += literal_length;
+          for(int i=0;i<literal_length;i++)
+                index[(index_index++)%MAXBUFF]=number;
           // NOTE(user): There is no MAYBE_REFILL() here, as TryFastAppend()
           // will not return true unless there's already at least five spare
           // bytes in addition to the literal.
@@ -929,8 +933,7 @@ char* Encode32(char* sptr, uint32 v) {
           ip_limit_ = ip + avail;
         }
 
-int tempoutnum;
-tempoutnum=outnum;
+int tempoutnum=outnum;
     int i=0,j=0;
 
     while(i<literal_length)
@@ -946,11 +949,14 @@ tempoutnum=outnum;
             {
                 memcpy(outstr+outnum,ip+i,1);
                 outnum++;
+                index[(index_index++)%MAXBUFF]=number;
             }
             else
             {
                 memcpy(outstr+outnum,string1,j-next[j]);
                 outnum+=j-next[j];
+                for(int i=0;i<j-next[j];i++)
+                    index[(index_index++)%MAXBUFF]=number;
             }
             j=next[j];
         }
@@ -962,8 +968,14 @@ tempoutnum=outnum;
              outnum+=strlen(string2);
              j=0;
              number++;
+             for(int i=0;i<strlen(string2);i++)
+                index[(index_index++)%MAXBUFF]=number;
          }
     }
+    memcpy(outstr+outnum,string1,j-next[j]);
+    outnum+=j-next[j];
+    for(int i=0;i<j-next[j];i++)
+        index[(index_index++)%MAXBUFF]=number;
     if (!writer->Append(outstr+tempoutnum, outnum-tempoutnum)) {
           return;
         }
@@ -990,11 +1002,21 @@ if (!writer->Append(ip, literal_length)) {
         // those bits, we get copy_offset (since the bit-field starts at
         // bit 8).
         const uint32 copy_offset = entry & 0x700;
-         buffstr=EmitCopy(buffstr,copy_offset + trailer, length);
-        if (!writer->AppendFromSelf(copy_offset + trailer, length)) {
+/*
+    if(copy_offset + trailer+(strlen(string2)-strlen(string1))*(number-index[(index_index-copy_offset - trailer)%MAXBUFF])>64*1024)
+    {
+        printf("copy_offset + trailer:%d\nnumber:%d\nindex_index:%d\nindex[(index_index-copy_offset - trailer)%MAXBUFF:%d\n",copy_offset + trailer,number,index_index,index[(index_index-copy_offset - trailer)%MAXBUFF]);
+        return ;
+    }
+*/
+
+         buffstr=EmitCopy(buffstr,copy_offset + trailer+(strlen(string2)-strlen(string1))*(number-index[(index_index-copy_offset - trailer)%MAXBUFF]), length);
+
+        if (!writer->AppendFromSelf(copy_offset + trailer+(strlen(string2)-strlen(string1))*(number-index[(index_index-copy_offset - trailer)%MAXBUFF]), length)) {
           return;
         }
-
+        for(int i=0;i<length;i++)
+            index[(index_index++)%MAXBUFF]=number;
         MAYBE_REFILL();
       }
     }

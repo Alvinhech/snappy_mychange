@@ -14,8 +14,8 @@
 using namespace std;
 
 #define BUF_SIZE 4*1024
-#define COM_FILE_NAME  "1.txt"
-#define UNCOM_FILE_NAME "test.snappy"
+#define COM_FILE_NAME  "alice29.txt"
+#define UNCOM_FILE_NAME "alice29.snappy"
 
 
 namespace File
