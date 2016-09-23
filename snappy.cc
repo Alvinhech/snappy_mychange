@@ -972,9 +972,13 @@ int tempoutnum=outnum;
                 index[(index_index++)%MAXBUFF]=number;
          }
     }
-    memcpy(outstr+outnum,string1,j-next[j]);
-    outnum+=j-next[j];
-    for(int i=0;i<j-next[j];i++)
+    if(j>0)
+    {
+        memcpy(outstr+outnum,string1,j);
+        outnum+=j;
+        j=0;
+    }
+    for(int i=0;i<j;i++)
         index[(index_index++)%MAXBUFF]=number;
     if (!writer->Append(outstr+tempoutnum, outnum-tempoutnum)) {
           return;
