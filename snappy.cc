@@ -976,7 +976,10 @@ int tempoutnum=outnum;
     {
         memcpy(outstr+outnum,string1,j);
         outnum+=j;
+        for(int i=0;i<j;i++)
+            index[(index_index++)%MAXBUFF]=number;
         j=0;
+
     }
     for(int i=0;i<j;i++)
         index[(index_index++)%MAXBUFF]=number;
@@ -1006,13 +1009,13 @@ if (!writer->Append(ip, literal_length)) {
         // those bits, we get copy_offset (since the bit-field starts at
         // bit 8).
         const uint32 copy_offset = entry & 0x700;
-/*
+
     if(copy_offset + trailer+(strlen(string2)-strlen(string1))*(number-index[(index_index-copy_offset - trailer)%MAXBUFF])>64*1024)
     {
-        printf("copy_offset + trailer:%d\nnumber:%d\nindex_index:%d\nindex[(index_index-copy_offset - trailer)%MAXBUFF:%d\n",copy_offset + trailer,number,index_index,index[(index_index-copy_offset - trailer)%MAXBUFF]);
+        printf("copy_offset + trailer:%d\nnumber:%d\nindex_index:%d\nindex[(index_index-copy_offset - trailer)%MAXBUFF:%d\n",copy_offset + trailer,number,index_index,(index_index-copy_offset - trailer)%MAXBUFF);
         return ;
     }
-*/
+
 
          buffstr=EmitCopy(buffstr,copy_offset + trailer+(strlen(string2)-strlen(string1))*(number-index[(index_index-copy_offset - trailer)%MAXBUFF]), length);
 
