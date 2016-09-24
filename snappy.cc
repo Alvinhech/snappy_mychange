@@ -715,8 +715,8 @@ class SnappyDecompressor {
     return true;
   }
   #define MAXBUFF (64*1024)
-char *string1="tired";
-char *string2="tire";
+char *string1="Blice";
+char *string2="Lily";
 FILE *outfile;
 int *next;
 int number=0;
